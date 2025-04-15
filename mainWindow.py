@@ -1,5 +1,4 @@
-from tkinter import Tk, Frame
-
+from tkinter import Tk
 from displayFrame import DisplayFrame
 from navFrame import NavFrame
 
@@ -22,11 +21,11 @@ class MainWindow(Tk):
         # Второй столбец - 3/4 части пространства
         self.grid_columnconfigure(1, weight=3)
 
-        nav_frame = NavFrame(self)
-        nav_frame.grid(column=0, row=0, sticky="nsew")
-
         main_frame = DisplayFrame(self)
         main_frame.grid(column=1, row=0, sticky="nsew")
+
+        nav_frame = NavFrame(self, main_frame)
+        nav_frame.grid(column=0, row=0, sticky="nsew")
 
     def run(self):
         self.mainloop()
