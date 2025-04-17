@@ -3,6 +3,7 @@ from tkinter.ttk import Radiobutton, Combobox
 from tkinter.messagebox import showerror
 from tkinter.constants import RAISED
 
+from fileManager import FileManager
 from financeManager import FinanceManager
 
 
@@ -14,6 +15,7 @@ class NavFrame(Frame):
     def __init__(self, root, main_frame):
         super().__init__(root)
         self.finance_manager = FinanceManager()
+        self.file_manager = FileManager(self.finance_manager)
         self.main_frame = main_frame
         self.type_var = StringVar(value="Доход")
         self.category_var = StringVar(value="")
@@ -31,7 +33,7 @@ class NavFrame(Frame):
         get_balance_btn = Button(self, text="Посмотреть баланс", width=30, relief=RAISED)
         get_balance_btn.pack(side="top", pady=10, anchor="center")
 
-        save_data_btn = Button(self, text="Сохранить", width=30, relief=RAISED)
+        save_data_btn = Button(self, text="Сохранить", width=30, relief=RAISED, command=self.file_manager.save)
         save_data_btn.pack(side="top", pady=10, anchor="center")
 
         load_data_btn = Button(self, text="Загрузить", width=30, relief=RAISED)
@@ -76,6 +78,7 @@ class NavFrame(Frame):
             self.finance_manager.add_transaction(amount, self.category_var.get(), self.type_var.get())
             self.main_frame.show_transactions(self.finance_manager.transactions)
             self.close_transaction_window()
+            self.file_manager.backup()
         except ValueError:
             showerror("Ошибка ввода!", 'Не заполнено поле "Сумма"', parent=self.add_window)
 
