@@ -1,5 +1,5 @@
-from mainWindow import MainWindow
+from controllers.financeController import FinanceController
 
 if __name__ == "__main__":
-    window = MainWindow()
-    window.run()
+    app = FinanceController()
+    app.run()

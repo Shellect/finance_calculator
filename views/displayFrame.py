@@ -8,13 +8,14 @@ class DisplayFrame(Frame):
         self.text_output = Text(self, wrap=WORD, state="disabled", bg="white", padx=10, pady=10)
         self.text_output.pack(expand=True, fill="both")
 
-    def show_transactions(self, transactions):
+    def clear(self):
         self.text_output.config(state="normal")
         self.text_output.delete(1.0, END)
 
-        for n, transaction in enumerate(transactions, 1):
-            amount = transaction["amount"]
-            category = transaction["category"]
-            transaction_type = transaction["type"]
-            self.text_output.insert(END, f"{n}. {transaction_type}: {amount} руб. ({category})\n")
+    def write_text(self, row):
+        self.text_output.insert(END, row)
+
+    def disable(self):
         self.text_output.config(state="disabled")
+
+
