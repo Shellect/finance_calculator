@@ -1,42 +1,74 @@
+from tkinter.messagebox import showerror
+from typing import Protocol
+
+from models.storage import DataStorage
+from views.transactionAppendWindow import TransactionAppendWindow
+
+
+class Observer(Protocol):
+    def refresh(self, text: str) -> None: ...
+
+
 class FinanceManager:
     """
     Управление финансовыми данными (транзакции, баланс)
     """
-    def __init__(self, display_manager):
-        self.__transactions = []
-        self.__balance = 0.0
-        self.display_manager = display_manager
 
-    def add_transaction(self, amount, category, transaction_type):
-        if transaction_type == "Расход":
-            self.__balance -= amount
-        elif transaction_type == "Доход":
-            self.__balance += amount
-        self.__transactions.append({
-            "amount": amount,
-            "category": category,
-            "type": transaction_type
-        })
+    def __init__(self):
+        self._observers: list[Observer] = []
+        self.storage = DataStorage()
 
+        self.is_modal_open = False
+        self.transaction_append_window = None
+
+    def add_observer(self, observer: Observer) -> None:
+        self._observers.append(observer)
+
+    def notify_observers(self, text: str) -> None:
+        for observer in self._observers:
+            observer.refresh(text)
+
+    def show_transaction_window(self, nav_frame):
+        """Открывает окно добавления новой транзакции"""
+        if self.is_modal_open:
+            return
+        self.is_modal_open = True
+        self.transaction_append_window = TransactionAppendWindow(nav_frame, self.save_transaction)
+        self.transaction_append_window.protocol("WM_DELETE_WINDOW", self.close_transaction_window)
+
+    def close_transaction_window(self):
+        self.is_modal_open = False
+        self.transaction_append_window.destroy()
+
+    def save_transaction(self):
+        try:
+            self.storage.add_transaction(
+                self.transaction_append_window.amount,
+                self.transaction_append_window.category,
+                self.transaction_append_window.type
+            )
+            self.show_transactions()
+            self.close_transaction_window()
+        except ValueError:
+            showerror("Ошибка ввода!", 'Не заполнено поле "Сумма"', parent=self.transaction_append_window)
 
     def show_transactions(self):
-        self.display_manager.clear()
-        for n, transaction in enumerate(self.transactions, 1):
-            amount = transaction["amount"]
-            category = transaction["category"]
-            transaction_type = transaction["type"]
-            self.display_manager.write_text(f"{n}. {transaction_type}: {amount} руб. ({category})\n")
-        self.display_manager.disable()
+        transactions = self.transactions
+        if not transactions:
+            text = "Нет транзакций"
+        else:
+            text = ""
+            for n, transaction in enumerate(transactions, 1):
+                text += f"{n}. {transaction.type}: {transaction.amount} руб. ({transaction.category})\n"
+        self.notify_observers(text)
 
     def show_balance(self):
-        self.display_manager.clear()
-        self.display_manager.write_text(f"текущий баланс: {self.balance} руб.\n")
-        self.display_manager.disable()
+        self.notify_observers(f"Текущий баланс: {self.balance} руб.\n")
 
     @property
     def transactions(self):
-        return self.__transactions
+        return self.storage.data.transactions
 
     @property
     def balance(self):
-        return self.__balance
+        return self.storage.data.balance

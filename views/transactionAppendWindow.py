@@ -2,7 +2,7 @@ from tkinter import Toplevel, StringVar
 from tkinter.ttk import Label, Entry, Combobox, Radiobutton, Button
 
 
-class AddWindow(Toplevel):
+class TransactionAppendWindow(Toplevel):
     modal_width = 300
     modal_height = 150
 

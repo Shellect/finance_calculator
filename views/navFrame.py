@@ -4,8 +4,7 @@ from tkinter.constants import RAISED
 
 class NavFrame(Frame):
     def __init__(self, root, controller):
-        super().__init__(root)
-        self.config(bg="white", bd=2, relief="groove")
+        super().__init__(root, bg="white", bd=2, relief="groove")
 
         buttons = [
             {"text": "Добавить транзакцию", "command": controller.add_transaction},

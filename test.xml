@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<data>
+  <row>
+    <index>0</index>
+    <transactions>amount=100.0 category='Транспорт' type=&lt;TransactionType.EXPENSE: 'Расход'&gt;</transactions>
+    <balance>-100.0</balance>
+  </row>
+</data>
