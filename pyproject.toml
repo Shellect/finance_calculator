@@ -6,8 +6,6 @@ authors = ["Oleg E <evstyunino@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pandas = "^2.2.3"
-lxml = "^5.3.2"
 pydantic = "^2.11.3"
 
 [tool.poetry.dev-dependencies]

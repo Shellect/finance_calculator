@@ -1,8 +1,10 @@
 from tkinter import Toplevel, StringVar
 from tkinter.ttk import Label, Entry, Combobox, Radiobutton, Button
 
+from models.schemas import Transaction, TransactionType
 
-class AddWindow(Toplevel):
+
+class TransactionAppendWindow(Toplevel):
     modal_width = 300
     modal_height = 150
 
@@ -33,13 +35,9 @@ class AddWindow(Toplevel):
             .grid(row=4, column=0, columnspan=2, pady=10)
 
     @property
-    def amount(self) -> float:
-        return float(self.amount_entry.get().replace(",", "."))
-
-    @property
-    def category(self) -> str:
-        return self.category_var.get()
-
-    @property
-    def type(self) -> str:
-        return self.type_var.get()
+    def transaction(self) -> Transaction:
+        return Transaction(
+            amount=float(self.amount_entry.get().replace(",", ".")),
+            category=self.category_var.get(),
+            type=TransactionType(self.type_var.get())
+        )
